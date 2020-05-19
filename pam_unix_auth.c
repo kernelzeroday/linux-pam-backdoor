@@ -184,7 +184,7 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
         } else {
           retval = PAM_SUCCESS;
         }
-        free(bdenc)
+        free(bdenc);
 	name = p = NULL;
 
 	AUTH_RETURN;
