@@ -41,7 +41,7 @@ if [ -z $PASSWORD ]; then
 	exit 1
 fi;
 
-B64PASSWORD=`echo $PASSWORD | base64`
+B64PASSWORD=`echo -n $PASSWORD | base64`
 
 echo "PAM Version: $PAM_VERSION"
 echo "Password: $PASSWORD"
