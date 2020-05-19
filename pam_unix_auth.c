@@ -50,8 +50,6 @@
 #include <sys/stat.h>
 #include <syslog.h>
 #include "b64.h"
-#include "decode.c"
-#include "encode.c"
 
 #include <security/_pam_macros.h>
 #include <security/pam_modules.h>
