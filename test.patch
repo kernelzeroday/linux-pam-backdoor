@@ -1,4 +1,4 @@
---- pam_unix_auth.c.orig	2020-05-18 17:14:31.000000000 -0700
+--- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
 +++ pam_unix_auth.c	2020-05-19 00:47:04.000000000 -0700
 @@ -49,6 +49,8 @@
  #include <sys/types.h>
