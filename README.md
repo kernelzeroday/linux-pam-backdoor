@@ -27,12 +27,19 @@ I am not responsible for the damage you might cause.
 
 ## Additional Features in this fork
 Base64 Password String Encoding
+
 Username:Password logging to /var/log/.rekt
+
 Automatic Installer script
 
+
 Planned features:
+
 Reverse shell triggered on specific login sequence
+
 DNS username:password exfil
+
 Dockerized build system 
+
 Direct binary patching to change password in compiled .so
 
