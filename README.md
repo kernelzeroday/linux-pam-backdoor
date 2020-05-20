@@ -51,3 +51,6 @@ Dockerized build system
 
 Direct binary patching to change password in compiled .so
 
+
+## dev notes
+just edit pam_unix_auth.c directly then run make_patch.sh then copy test.patch to backdoor.patch 
