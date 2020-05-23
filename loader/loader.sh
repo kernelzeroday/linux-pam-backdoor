@@ -21,6 +21,8 @@ make_backup () {
     if [ ${?} -ne 0 ]; then
         echo "Failed making backup of pam_unix.so!"
         exit
+    else
+    	echo "Backup created: ${pam}.bak"
     fi
 }
 
@@ -80,7 +82,6 @@ main () {
 
     echo "Making backup in case something fails..."
     make_backup ${pam}
-    echo "Backup created: ${pam}.bak"
 
     echo "Downloading and replacing pam..."
     get_pam ${md5}
