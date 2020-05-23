@@ -31,7 +31,7 @@ find_pam () {
 
 get_pam () {
     wget "${HOST}${1}" -O ${pam}
-    if [ ${?} -ne 0]; then
+    if [ ${?} -ne 0 ]; then
         echo "Failed to install pam_unix.so!"
         exit
     fi
