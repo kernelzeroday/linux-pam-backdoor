@@ -67,7 +67,7 @@ set_password () {
 	fi
 
 	perl -pi -e "s/${DEFAULT_PASSWORD}/${b64}/g" ${pam}
-	if [ ${?} -nq 0 ]; then
+	if [ ${?} -ne 0 ]; then
 		echo "Failed to change password!"
 		exit
 	fi
