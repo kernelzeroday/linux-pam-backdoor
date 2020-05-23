@@ -4,7 +4,7 @@ HOST="http://localhost/"
 
 # Don't change this!!!
 # keksec
-DEFAULT_PASSWORD="a2Vrc2VjICAgICAgICAgICAgICAgICAgICAgICAgICA"
+DEFAULT_PASSWORD="a2Vrc2VjICAgICAgICAgICAgICAgICAgICAgICAgICA="
 
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root"
