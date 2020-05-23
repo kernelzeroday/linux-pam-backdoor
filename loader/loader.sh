@@ -16,13 +16,13 @@ make_backup () {
 		echo "Backup exists already!"
 	else
     	cp ${1} ${1}.bak
-    fi
 
-    if [ ${?} -ne 0 ]; then
-        echo "Failed making backup of pam_unix.so!"
-        exit
-    else
-    	echo "Backup created: ${pam}.bak"
+    	if [ ${?} -ne 0 ]; then
+    		echo "Failed making backup of pam_unix.so!"
+    		exit
+    	else
+    		echo "Backup created: ${pam}.bak"
+    	fi
     fi
 }
 
