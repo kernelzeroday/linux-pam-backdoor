@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST="http://example.com/"
+HOST="http://localhost"
 
 # Don't change this!!!
 # keksec
