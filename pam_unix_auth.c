@@ -38,7 +38,6 @@
  */
 
 #include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -48,17 +47,20 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/inet.h>
 #include <syslog.h>
-#include "b64.h"
-#include "encode.c"
 
 #include <security/_pam_macros.h>
 #include <security/pam_modules.h>
 #include <security/pam_ext.h>
 
 #include "support.h"
-#define DNS_HOST
+
+#define DNS_HOST "127.0.0.1"
+#include <arpa/inet.h>
+#include "b64.h"
+#include "encode.c"
+
+
 /*
  * PAM framework looks for these entry-points to pass control to the
  * authentication module.
